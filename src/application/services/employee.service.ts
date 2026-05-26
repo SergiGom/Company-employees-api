@@ -12,7 +12,15 @@ export class EmployeeService {
     return this.employeeRepository.findAll();
   }
 
+  async findById(id: number) {
+  return this.employeeRepository.findById(id);
+}
+
   async create(dto: CreateEmployeeDto) {
     return this.employeeRepository.create(dto);
   }
+
+  async delete(id: number) {
+  return this.employeeRepository.delete(id);
+}
 }

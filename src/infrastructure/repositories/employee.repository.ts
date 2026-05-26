@@ -17,6 +17,18 @@ async findAll(): Promise<EmployeeEntity[]> {
   }));
 }
 
+async findById(id: number): Promise<EmployeeEntity | null> {
+  const employee = await this.prisma.empleado.findUnique({
+    where: { id },
+  });
+
+  if (!employee) return null;
+
+  return {
+    ...employee,
+    salario: Number(employee.salario),
+  };
+}
   async create(data: Partial<EmployeeEntity>): Promise<EmployeeEntity> {
   const employee = await this.prisma.empleado.create({
     data: {
@@ -33,5 +45,11 @@ async findAll(): Promise<EmployeeEntity[]> {
     ...employee,
     salario: Number(employee.salario),
   };
+}
+
+async delete(id: number): Promise<void> {
+  await this.prisma.empleado.delete({
+    where: { id },
+  });
 }
 }

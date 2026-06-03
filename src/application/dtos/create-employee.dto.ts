@@ -2,8 +2,10 @@ import { ApiProperty } from '@nestjs/swagger';
 
 import {
   IsEmail,
+  IsInt,
   IsNotEmpty,
   IsNumber,
+  IsPositive,
   IsString,
 } from 'class-validator';
 
@@ -32,17 +34,21 @@ export class CreateEmployeeDto {
     example: 'Backend Developer',
   })
   @IsString()
+  @IsNotEmpty()
   cargo!: string;
 
   @ApiProperty({
     example: 5000,
   })
   @IsNumber()
+  @IsPositive()
   salario!: number;
 
   @ApiProperty({
     example: 1,
   })
-  @IsNumber()
+  @IsInt()
+  @IsPositive()
   companiaId!: number;
 }
+

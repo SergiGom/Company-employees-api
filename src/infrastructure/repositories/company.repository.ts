@@ -42,4 +42,59 @@ export class CompanyRepository implements ICompanyRepository {
       where: { id },
     });
   }
+  async getPaged(
+  page: number,
+  size: number,
+  search?: string,
+  orderBy: string = 'id',
+  direction: 'asc' | 'desc' = 'asc',
+): Promise<{
+  data: CompanyEntity[];
+  total: number;
+}> {
+  const skip = (page - 1) * size;
+
+  const where = search
+    ? {
+        OR: [
+          {
+            nombre: {
+              contains: search,
+            },
+          },
+          {
+            direccion: {
+              contains: search,
+            },
+          },
+          {
+            telefono: {
+              contains: search,
+            },
+          },
+        ],
+      }
+    : {};
+
+  const [companies, total] =
+    await Promise.all([
+      this.prisma.compania.findMany({
+        where,
+        skip,
+        take: size,
+        orderBy: {
+          [orderBy]: direction,
+        },
+      }),
+
+      this.prisma.compania.count({
+        where,
+      }),
+    ]);
+
+  return {
+    data: companies,
+    total,
+  };
+}
 }

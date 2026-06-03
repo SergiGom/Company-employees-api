@@ -1,14 +1,27 @@
 import { Injectable } from '@nestjs/common';
+import {
+  Prisma,
+} from '@prisma/client';
+
 import { PrismaService } from '../prisma/prisma.service';
-import { IUnitOfWork } from '../../domain/unit-of-work/unit-of-work.interface';
 
 @Injectable()
-export class PrismaUnitOfWork implements IUnitOfWork {
-  constructor(private readonly prisma: PrismaService) {}
+export class PrismaUnitOfWork {
+  constructor(
+    private readonly prisma: PrismaService,
+  ) {}
 
-  async execute<T>(work: () => Promise<T>): Promise<T> {
-    return this.prisma.$transaction(async () => {
-      return work();
-    });
+  async execute<T>(
+    work: (
+      transaction: Prisma.TransactionClient,
+    ) => Promise<T>,
+  ): Promise<T> {
+    return this.prisma.$transaction(
+      async (
+        transaction: Prisma.TransactionClient,
+      ) => {
+        return work(transaction);
+      },
+    );
   }
 }

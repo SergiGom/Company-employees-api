@@ -23,7 +23,7 @@ import { CompanyService } from '../../application/services/company.service';
 import { CreateCompanyDto } from '../../application/dtos/create-company.dto';
 import { UpdateCompanyDto } from '../../application/dtos/update-company.dto';
 import { PaginationQueryDto } from '../../application/dtos/pagination-query.dto';
-import { CreateCompanyWithEmployeesDto } from 'src/application/dtos/create-company-with-employees.dto';
+import { CreateCompanyWithEmployeesDto } from '../../application/dtos/create-company-with-employees.dto';
 
 @UseGuards(
   JwtAuthGuard,

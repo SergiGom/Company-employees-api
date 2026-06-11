@@ -1,8 +1,5 @@
 import { ValidationPipe } from '@nestjs/common';
-
 import { NestFactory } from '@nestjs/core';
-
-import { HttpExceptionFilter } from './presentation/filters/http-exception.filter';
 
 import {
   SwaggerModule,
@@ -11,9 +8,21 @@ import {
 
 import { AppModule } from './app.module';
 
+import { HttpExceptionFilter } from './presentation/filters/http-exception.filter';
+
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  // CORS
+  app.enableCors({
+    origin: [
+      'http://localhost:3000',
+      process.env.FRONTEND_URL || '',
+    ],
+    credentials: true,
+  });
+
+  // Validation
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
@@ -22,10 +31,12 @@ async function bootstrap() {
     }),
   );
 
+  // Global Filters
   app.useGlobalFilters(
     new HttpExceptionFilter(),
   );
 
+  // Swagger
   const config = new DocumentBuilder()
     .setTitle('Company Employees API')
     .setDescription('API con Onion Architecture')
@@ -48,8 +59,9 @@ async function bootstrap() {
 
   await app.listen(port);
 
-  console.log(`Application running on port ${port}`);
+  console.log(
+    `Application running on port ${port}`,
+  );
 }
 
 bootstrap();
-

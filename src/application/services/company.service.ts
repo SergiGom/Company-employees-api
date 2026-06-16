@@ -2,6 +2,7 @@ import {
   Inject,
   Injectable,
   NotFoundException,
+  ForbiddenException,
 } from '@nestjs/common';
 
 import type { ICompanyRepository } from '../../domain/repositories/company.repository.interface';
@@ -109,6 +110,32 @@ export class CompanyService {
       query.size || 10,
     );
   }
+
+  async validateUpdatePermission(
+  user: any,
+) {
+  if (
+    user.role === 'ADMIN' &&
+    user.ciudad === 'MEDELLIN'
+  ) {
+    throw new ForbiddenException(
+      'Los administradores de Medellín no pueden editar compañías',
+    );
+  }
+}
+
+async validateDeletePermission(
+  user: any,
+) {
+  if (
+    user.role === 'ADMIN' &&
+    user.ciudad === 'BOGOTA'
+  ) {
+    throw new ForbiddenException(
+      'Los administradores de Bogotá no pueden eliminar compañías',
+    );
+  }
+}
 
   async createWithEmployees(
     dto: CreateCompanyWithEmployeesDto,

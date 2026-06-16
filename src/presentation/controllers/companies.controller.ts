@@ -6,6 +6,7 @@ import {
   Param,
   Post,
   Put,
+  Req,
   Query,
   UseGuards,
 } from '@nestjs/common';
@@ -88,24 +89,34 @@ createWithEmployees(
   }
 
   @Put(':id')
-  @Roles('ADMIN', 'USER')
-  update(
-    @Param('id') id: string,
-    @Body() dto: UpdateCompanyDto,
-  ) {
-    return this.companyService.update(
-      Number(id),
-      dto,
-    );
-  }
+@Roles('ADMIN', 'USER')
+async update(
+  @Req() req: any,
+  @Param('id') id: string,
+  @Body() dto: UpdateCompanyDto,
+) {
+  await this.companyService.validateUpdatePermission(
+    req.user,
+  );
+
+  return this.companyService.update(
+    Number(id),
+    dto,
+  );
+}
 
   @Delete(':id')
-  @Roles('ADMIN')
-  delete(
-    @Param('id') id: string,
-  ) {
-    return this.companyService.delete(
-      Number(id),
-    );
-  }
+@Roles('ADMIN')
+async delete(
+  @Req() req: any,
+  @Param('id') id: string,
+) {
+  await this.companyService.validateDeletePermission(
+    req.user,
+  );
+
+  return this.companyService.delete(
+    Number(id),
+  );
+}
 }
